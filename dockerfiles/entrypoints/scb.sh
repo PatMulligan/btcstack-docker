@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Safety bash script options
 # # -e causes a bash script to exit immediately when a command fails
