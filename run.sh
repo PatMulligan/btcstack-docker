@@ -132,9 +132,9 @@ choose_alias() {
   print_header $1 "LND node alias"
   echo -e "Choose the alias your LND node will use, which can be up to 32 UTF-8 characters in length."
   echo -e ""
-  echo -n "Insert alias (default is 'LndGangsta'): "
+  echo -n "Insert alias (default is 'LndNinja'): "
   read NODE_ALIAS
-  NODE_ALIAS=${NODE_ALIAS:-LndGangsta}
+  NODE_ALIAS=${NODE_ALIAS:-LndNinja}
 }
 
 insert_scb_repo() {
