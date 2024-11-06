@@ -1,5 +1,5 @@
   bitcoin:
-    container_name: awning_bitcoin
+    container_name: btcstack_bitcoin
     user: "${UID}:${GID}"
     depends_on: [tor]
     build:

@@ -1,5 +1,5 @@
   electrs:
-    container_name: awning_electrs
+    container_name: btcstack_electrs
     user: "${UID}:${GID}"
     depends_on: [bitcoin]
     build:

@@ -1,5 +1,5 @@
   nginx:
-    container_name: awning_nginx
+    container_name: btcstack_nginx
     depends_on: [rtl, electrs]
     build:
       context: ./dockerfiles/

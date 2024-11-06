@@ -1,5 +1,5 @@
   scb:
-    container_name: awning_scb
+    container_name: btcstack_scb
     user: "${UID}:${GID}"
     depends_on: [lnd]
     build:

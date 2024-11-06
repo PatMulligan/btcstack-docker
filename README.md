@@ -1,10 +1,12 @@
-# A dockerized Bitcoin + LND + BTCPay  node
+Remix made thanks to [Awning](https://github.com/giovantenne/awning)
+
+# A dockerized Bitcoin + LND + RTL node
+## Options for BTCPay Server, Static Channel Backup, nginx, traefik
 
 Something like [Umbrel](https://umbrel.com) but lighter and portable.
 Something like [RaspiBolt](https://raspibolt.org/) but easier and automated. Bitcoin/Lightning-Network oriented with no frills.
 
-**Awning** doesn't install anything on your PC, making it lightweight, customizable and portable.
-It is a plain/vanilla Docker setup.
+This is a plain/vanilla Docker setup.
 
 ## Disclaimer
 This open-source project is provided 'as-is' without any warranty of any kind, either expressed or implied. The developers are not liable for any damages or losses arising out of the use of this software.
@@ -17,23 +19,24 @@ Please read the [full disclaimer](DISCLAIMER.md) before using this project.
 - docker-compose (or [`docker compose plugin`](https://docs.docker.com/compose/install/linux/))
 
 ```sh
-$ sudo apt-get install -y docker.io docker-compose-v2 git
+curl -fsSL https://get.docker.com -o get-docker.sh
+sh get-docker.sh
 ```
 
 
-# Run your BTC / LN / BTCPay node (the easy way):
+# Run your BTC / LN / RTL node (the easy way):
 
 1. Clone this repository
-2. Run the awning.sh utility script
+> [!TODO]
+> - [ ] update this
+2. Run the install.sh utility script
 
 ```sh
-$ git clone https://github.com/giovantenne/awning.git
-$ cd awning
-$ ./awning.sh
+$ git clone https://github.com/PatMulligan/btc-docker-stack.git
+$ cd cd btc-docker-stack
+$ ./install.sh
 ```
-You can run the `./awning.sh` utility script every time you want to interact with your node.
-
-https://github.com/giovantenne/awning/assets/917400/43319ca7-4552-4608-b3ce-2b2ddd9778dd
+You can run the `./install.sh` utility script every time you want to interact with your node.
 
 
 # ... or manually setup your node instead:
@@ -41,7 +44,7 @@ If you want to have full control you can manually setup your node in 6 steps.
 
 Please follow [this guide](https://docs.docker.com/engine/install/linux-postinstall/) if you don't want to preface the `docker` and the `docker-compose` commands with `sudo`.
 In this guide  `sudo` will be always omitted.
-All the commands need to be run on the **Awning** root directory.
+All the commands need to be run from the project **root** directory.
 
 Here is the steps:
 
@@ -61,14 +64,14 @@ You can also [add your BTCPay Server](#7) eventually.
 
 Clone or download this repository and enter the project directory.
 ```sh
-$ git clone https://github.com/giovantenne/awning.git
-$ cd awning
+$ git clone https://github.com/PatMulligan/btc-docker-stack.git
+$ cd btc-docker-stack
 ```
 
 ## LND channel backups preparation
 The Static Channels Backup (SCB) is a feature of LND that allows for the on-chain recovery of lightning channel balances in the case of a bricked node. Despite its name, it does not allow the recovery of your LN channels but increases the chance that you'll recover all (or most) of your off-chain (local) balances.
 
-**Awning** will automatically upload a copy of your `channel.backup` every time it changes on a Github repository you own, so you will need to create one and provide upload credential [later](#5).
+This will automatically upload a copy of your `channel.backup` every time it changes on a Github repository you own, so you will need to create one and provide upload credential [later](#5).
 
 <a name="2"></a>
 #### Create a GitHub repository
@@ -84,7 +87,7 @@ The Static Channels Backup (SCB) is a feature of LND that allows for the on-chai
 <a name="3"></a>
 ## Edit and understand the .env file
 
-The `.env` file contains some **Awning** setup parameters that you can/need to customize. Just make a copy of the sample file and edit it.
+The `.env` file contains some setup parameters that you can/need to customize. Just make a copy of the sample file and edit it.
 ```sh
 $ cp .env.sample .env
 ```
@@ -105,9 +108,9 @@ $ cp .env.sample .env
 
 <a name="4"></a>
 # How to begin
-The `docker-compose.yml` file contains the **Awning** docker services that your node will run.
+The `docker-compose.yml` file contains the docker services that your node will run.
 
-Since you are not using the `./awning.sh` utility script, just make a copy of the sample file.
+Since you are not using the `./install.sh` utility script, just make a copy of the sample file.
 ```sh
 $ cp docker-compose-sample.yml docker-compose.yml
 ```
@@ -133,7 +136,7 @@ After all the images are built, “bitcoind” should start, begin to sync and v
 Check the status of the bitcoin daemon that was started with the following command. Exit with Ctrl-C
 
 ```sh
-$ docker logs -f awning_bitcoin
+$ docker logs -f btcstack_bitcoin
 ```
 
 Those services open the following TCP ports on your host:
@@ -157,7 +160,7 @@ Once you first start the containers there are still a couple of steps to complet
 Run this command:
 
 ```sh
-$ docker logs awning_scb 2> /dev/null | grep -o 'ssh-rsa.*' | head -1
+$ docker logs btcstack_scb 2> /dev/null | grep -o 'ssh-rsa.*' | head -1
 ```
 
 * Go back to the GitHub repository webpage
@@ -172,7 +175,7 @@ $ docker logs awning_scb 2> /dev/null | grep -o 'ssh-rsa.*' | head -1
 If you are migrating from **Umbrel** or from an existing LND node just copy your data to the `./data/lnd` directory before the `docker-compose up -d --build` command and skip the rest of this step, otherwise run this command:
 
 ```sh
-$ docker exec -it awning_lnd lncli create
+$ docker exec -it btcstack_lnd lncli create
 ```
 
 Enter your password as wallet password (it must be exactly the same you stored in `.env` as [LND_PASSWORD](#3)).
@@ -187,7 +190,7 @@ These 24 words is all that you need to restore the Bitcoin on-chain wallet. The 
 
 # Use Electrs (via TOR)
 
-Run the following command from the **Awning** root directory to retrieve the Electrs TOR address to use in your wallet:
+Run the following command from the project **root** directory to retrieve the Electrs TOR address to use in your wallet:
 ```sh
 $ echo `cat ./data/tor/hidden_service_electrs/hostname`:50001
 ```
@@ -196,21 +199,21 @@ $ echo `cat ./data/tor/hidden_service_electrs/hostname`:50001
 
 Ride The Lightining is accessible on both `http` and `https` with a self signed SSL certificate (so expect a warning message from your browser) using the [password](#3) choosen on the `.env` file.
 
-If you are running **Awning** on your PC you can access the web interface through these URLs:
+If you are running on this machine you can access the web interface through these URLs:
 - [https://localhost:8081](https://localhost:8081)
 - [http://localhost:8082](http://localhost:8082)
 
-Replace `localhost` with the IP of your node if you are running **Awning** on a different PC.
+Replace `localhost` with the IP of your node if you are running on a different PC.
 
 # Connect Zeus to your node (via TOR)
 - Download the Zeus app for your mobile phone.
 - Open Zeus and tap on “GET STARTED”
 - Tap on “Connect a node” and then tap on the “+” at the top right to add your node
-- Enter a Nickname for your node (e.g., AwningNode)
+- Enter a Nickname for your node (e.g., LndGangsta)
 - Click on “SCAN LNDCONNECT CONFIG” and, if prompted, allow Zeus to use the camera
 - Scan the QR code generated with the following command. It will be a big QR code, so maximize your terminal window and use CTRL+- to shrink the code further to fit the screen
 ```sh
-$ URI=`cat ./data/tor/hidden_service_lnd_rest/hostname` && docker exec awning_lnd lndconnect --host $URI --port 8080
+$ URI=`cat ./data/tor/hidden_service_lnd_rest/hostname` && docker exec btcstack_lnd lndconnect --host $URI --port 8080
 ```
 
 - Click on “SAVE NODE CONFIG”. Zeus is now connecting to your node, and it might take a while the first time.
@@ -219,8 +222,8 @@ $ URI=`cat ./data/tor/hidden_service_lnd_rest/hostname` && docker exec awning_ln
 | Command | Description |
 | --- | --- |
 | `docker ps` |  Lists the containers that are running on your host |
-| `docker logs -f awning_bitcoin` | Stream the logs for the *bitcoin/lnd/electrs* container |
-| `docker exec -it awning_lnd bash` |  Connect to the *lnd* container so that you can use the `lncli` command (eg. `lncli getinfo`) |
+| `docker logs -f btcstack_bitcoin` | Stream the logs for the *bitcoin/lnd/electrs* container |
+| `docker exec -it btcstack_lnd bash` |  Connect to the *lnd* container so that you can use the `lncli` command (eg. `lncli getinfo`) |
 | `docker-compose restart bitcoin` | Restart the *bitcoin/lnd/electrs* container |
 | `docker-compose build --no-cache` | Rebuild all the containers from scratch (eg. after changing bitcoin version in `.env`)|
 | `docker-compose down` | Stop all the containers |
@@ -229,7 +232,7 @@ $ URI=`cat ./data/tor/hidden_service_lnd_rest/hostname` && docker exec awning_ln
 
 # Directories structure
 ```sh
-├── awning.sh
+├── install.sh
 ├── configs
 │   ├── bitcoin.conf
 │   ├── electrs.toml
@@ -280,16 +283,16 @@ $ URI=`cat ./data/tor/hidden_service_lnd_rest/hostname` && docker exec awning_ln
 
 | Directory | Description |
 | --- | --- |
-| `configs` | Here you can find all the configuration files. Feel free to edit them as you like, but please be carefull to not mess-up with authentication method: **Awning** currently uses cookies authentication between services instead of RPC. |
+| `configs` | Here you can find all the configuration files. Feel free to edit them as you like, but please be carefull to not mess-up with authentication method: Currently uses cookies authentication between services instead of RPC. |
 | `data` | Here is where the data are persisted. The Bitcoin Blockchain, the Electrs indexes, the LND channels, etc. are all stored here. |
 | `dockerfiles` | Here you can find and inspect all the files used to build the images. **Don't trust, verify**! |
-| `fragments` | All the services that can be added to the `docker-compose.yml` during the setup tutorial with the `awning.sh` utility script |
+| `fragments` | All the services that can be added to the `docker-compose.yml` during the setup tutorial with the `install.sh` utility script |
 
 
 <a name="7"></a>
 # BTCPay Server (optional)
 
-You can easily run your own self-hosted instance of [BTCPay Server](https://btcpayserver.org/) with **Awning** with just a few slight modification to a couple of files provided with this repository:
+You can easily run your own self-hosted instance of [BTCPay Server](https://btcpayserver.org/) with just a few slight modification to a couple of files provided with this repository:
 
 | File | Modification |
 | --- | --- |
@@ -311,9 +314,9 @@ If you wish to update Bitcoin/LND/Electrs version just edit the `.env` file and 
 $ docker-compose down
 $ docker-compose up -d
 ```
-# How to update Awning
+# How to update
 
-If you wish to update **Awning** to the last version just run the following commands:
+If you wish to update to the last version just run the following commands:
 
 ```sh
 $ docker-compose down
@@ -327,9 +330,9 @@ $ docker-compose up -d --build
 ```
 # Support
 
-For any questions or issues you can join our [Telegram support channel](https://t.me/awning_node) or open a [Github issue](https://github.com/giovantenne/awning/issues/new).
+For any questions or issues you can join our [Telegram support channel]() or open a [Github issue]().
 
 # Donations/Project contributions
-If you would like to contribute and help dev team with this project you can send a donation to the following LN address ⚡`donate@btcpay.cryptogadgets.net`⚡ or on-chain   `bc1qg2t8vnahzv5yy7e885l0a59ggagne9nxdvts4t`
+If you would like to contribute and help dev team with this project you can send a donation to the following LN address ⚡``⚡ or on-chain   ``
 
 Enjoy!

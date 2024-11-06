@@ -1,5 +1,5 @@
   lnd:
-    container_name: awning_lnd
+    container_name: btcstack_lnd
     user: "${UID}:${GID}"
     depends_on: [bitcoin]
     build:

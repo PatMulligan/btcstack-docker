@@ -97,17 +97,17 @@ is_disk_space_available() {
 
 show_welcome() {
   echo -e ""
-  echo -e "Welcome to the ${ORANGE}${BOLD}Awning${NB}${NC} setup tutorial!"
+  echo -e "Welcome to the ${ORANGE}${BOLD}Btcstack Docker${NB}${NC} setup tutorial!"
   echo -e "This script will guide you through setting up a full dockerized Bitcoin/LND/BTCPay server on your PC."
   echo -e ""
   echo -e "${BOLD}************ DISCLAIMER ****************${NB}"
   echo -e "${BOLD}This open-source project ('the Project') is provided 'as-is' without any warranty of any kind, either expressed or implied. The developers are not liable for any damages or losses arising out of the use of this software.${NB}"
-  echo -e "${BOLD}Please read the full disclaimer before using the Project here: ${UNDERLINE}https://github.com/giovantenne/awning/blob/master/DISCLAIMER.md${NC}${NB}"
+  echo -e "${BOLD}Please read the full disclaimer before using the Project here: ${UNDERLINE}https://github.com/PatMulligan/btc-docker-stack/blob/master/DISCLAIMER.md${NC}${NB}"
   echo -e "${BOLD}By using the Project, you acknowledge that you have read, understood, and agree to be bound by this disclaimer. If you do not agree to this disclaimer, you should not use the Project.${NB}"
   echo -e "${BOLD}****************************************${NB}"
   echo -e ""
   if ! is_disk_space_available; then
-    echo -e "${RED}The disk where you are running Awning doesn't have enough free space and can not contain the Bitcoin blockchain.${NC}"
+    echo -e "${RED}The disk you're running on doesn't have enough free space and can not contain the Bitcoin blockchain.${NC}"
     echo -e "${RED}Please exit this setup with CTRL+C use a different disk.${NC}"
     echo -e "----------------"
   fi
@@ -132,16 +132,16 @@ choose_alias() {
   print_header $1 "LND node alias"
   echo -e "Choose the alias your LND node will use, which can be up to 32 UTF-8 characters in length."
   echo -e ""
-  echo -n "Insert alias (default is 'AwningNode'): "
+  echo -n "Insert alias (default is 'LndGangsta'): "
   read NODE_ALIAS
-  NODE_ALIAS=${NODE_ALIAS:-AwningNode}
+  NODE_ALIAS=${NODE_ALIAS:-LndGangsta}
 }
 
 insert_scb_repo() {
   print_header $1 "LND channel backups"
   echo -e "The Static Channels Backup (SCB) is a feature of ${LIGHT_BLUE}LND${NC} that allows for the on-chain recovery of lightning channel balances in the case of a bricked node. Despite its name, it does not allow the recovery of your LN channels but increases the chance that you'll recover all (or most) of your off-chain (local) balances."
   echo -e ""
-  echo -e "${BOLD}Awning${NB} will automatically upload a copy of your ${UNDERLINE}channel.backup${NC} every time it changes on a Github repository you own, so you will need to create one and provide upload credential later."
+  echo -e "${BOLD}Bitcoin Docker Stack${NB} will automatically upload a copy of your ${UNDERLINE}channel.backup${NC} every time it changes on a Github repository you own, so you will need to create one and provide upload credential later."
   echo -e ""
   echo -e "${BOLD}Create a GitHub repository${NB}"
   echo -e "   - Go to GitHub (${UNDERLINE}https://github.com${NC}), sign up for a new user account, or log in with an existing one."
@@ -222,10 +222,10 @@ upload_scb_repo_deploy_key() {
     echo -e "Performing test. Please wait..."
     # Test read
     if ! git config --global user.email &>/dev/null; then
-      git config --global user.email "awning@example.com"
+      git config --global user.email "kawok@example.com"
     fi
     if ! git config --global user.name &>/dev/null; then
-      git config --global user.name "Awning"
+      git config --global user.name "Kawok"
     fi
     GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=.ssh/known_hosts -o IdentitiesOnly=yes -i .ssh/id_rsa" git clone $SCB_REPO test
     if [ $? -ne 0 ]; then
@@ -286,7 +286,7 @@ enable_btcpay() {
 }
 
 function check_lnd(){
-  while [ "$($docker_command inspect -f '{{.State.Running}}' awning_lnd 2>/dev/null)" != "true" ]; do
+  while [ "$($docker_command inspect -f '{{.State.Running}}' btcstack_lnd 2>/dev/null)" != "true" ]; do
     echo -e "Waiting for LND container to start..."
     sleep 10
     echo "Timed out waiting for the container to start."
@@ -321,7 +321,7 @@ function check_lnd(){
       fi
     done
     echo $password > ./data/lnd/password.txt
-    $docker_command exec -it awning_lnd lncli create
+    $docker_command exec -it btcstack_lnd lncli create
     echo -e ""
   fi
 }
@@ -389,7 +389,7 @@ display_menu() {
   while true; do
     echo ""
     echo "#############################################"
-    echo -e "#                  ${BOLD}${ORANGE}Awning${NC}${NB}                   #"
+    echo -e "#                  ${BOLD}${ORANGE}Bitcoin Docker Stack${NC}${NB}                   #"
     echo "#############################################"
     echo "1) Start/Stop the node"
     echo "2) Logs"
@@ -457,19 +457,19 @@ display_menu() {
 }
 
 show_node_info() {
-    bitcoin_version=$($docker_command exec awning_bitcoin bitcoin-cli --version | grep "Bitcoin Core RPC client version")
-    sync_percentage=$($docker_command exec awning_bitcoin /bin/bash -c 'echo "`bitcoin-cli getblockchaininfo | jq -r '.verificationprogress'` * 100" | bc')
-    blocks=$($docker_command exec awning_bitcoin /bin/bash -c "bitcoin-cli getblockchaininfo | jq -r '.blocks'")
-    headers=$($docker_command exec awning_bitcoin /bin/bash -c "bitcoin-cli getblockchaininfo | jq -r '.headers'")
-    initialblockdownload=$($docker_command exec awning_bitcoin /bin/bash -c "bitcoin-cli getblockchaininfo | jq -r '.initialblockdownload'")
+    bitcoin_version=$($docker_command exec btcstack_bitcoin bitcoin-cli --version | grep "Bitcoin Core RPC client version")
+    sync_percentage=$($docker_command exec btcstack_bitcoin /bin/bash -c 'echo "`bitcoin-cli getblockchaininfo | jq -r '.verificationprogress'` * 100" | bc')
+    blocks=$($docker_command exec btcstack_bitcoin /bin/bash -c "bitcoin-cli getblockchaininfo | jq -r '.blocks'")
+    headers=$($docker_command exec btcstack_bitcoin /bin/bash -c "bitcoin-cli getblockchaininfo | jq -r '.headers'")
+    initialblockdownload=$($docker_command exec btcstack_bitcoin /bin/bash -c "bitcoin-cli getblockchaininfo | jq -r '.initialblockdownload'")
 
-    lnd_version=$($docker_command exec awning_lnd /bin/bash -c "lncli getinfo | jq -r '.version'")
-    synced_to_chain=$($docker_command exec awning_lnd /bin/bash -c "lncli getinfo | jq -r '.synced_to_chain'")
-    synced_to_graph=$($docker_command exec awning_lnd /bin/bash -c "lncli getinfo | jq -r '.synced_to_graph'")
-    num_pending_channels=$($docker_command exec awning_lnd /bin/bash -c "lncli getinfo | jq -r '.num_pending_channels'")
-    num_active_channels=$($docker_command exec awning_lnd /bin/bash -c "lncli getinfo | jq -r '.num_active_channels'")
-    num_inactive_channels=$($docker_command exec awning_lnd /bin/bash -c "lncli getinfo | jq -r '.num_inactive_channels'")
-    num_peers=$($docker_command exec awning_lnd /bin/bash -c "lncli getinfo | jq -r '.num_peers'")
+    lnd_version=$($docker_command exec btcstack_lnd /bin/bash -c "lncli getinfo | jq -r '.version'")
+    synced_to_chain=$($docker_command exec btcstack_lnd /bin/bash -c "lncli getinfo | jq -r '.synced_to_chain'")
+    synced_to_graph=$($docker_command exec btcstack_lnd /bin/bash -c "lncli getinfo | jq -r '.synced_to_graph'")
+    num_pending_channels=$($docker_command exec btcstack_lnd /bin/bash -c "lncli getinfo | jq -r '.num_pending_channels'")
+    num_active_channels=$($docker_command exec btcstack_lnd /bin/bash -c "lncli getinfo | jq -r '.num_active_channels'")
+    num_inactive_channels=$($docker_command exec btcstack_lnd /bin/bash -c "lncli getinfo | jq -r '.num_inactive_channels'")
+    num_peers=$($docker_command exec btcstack_lnd /bin/bash -c "lncli getinfo | jq -r '.num_peers'")
     echo ""
     echo -e "${ORANGE}BITCOIN${NC}"
     echo -e $bitcoin_version
@@ -612,7 +612,7 @@ connections_submenu() {
         echo -e "LND Rest API (ssl):  https://$local_ip:8080"
         echo -e "RTL (ssl):           https://$local_ip:8081"
         echo -e "RTL (no ssl):        http://$local_ip:8082"
-        if $docker_command ps --filter "name=awning_btcpay" --filter "status=running"|grep awning_btcpay > /dev/null; then
+        if $docker_command ps --filter "name=btcstack_btcpay" --filter "status=running"|grep btcstack_btcpay > /dev/null; then
           echo -e "BTCPay (ssl):        https://$local_ip:8083"
           echo -e "BTCPay (no ssl):     http://$local_ip:8084"
         fi
@@ -624,12 +624,12 @@ connections_submenu() {
         if [ $(are_services_up) -ne 0 ]; then
           echo -e "${RED}Node is not running!${NC}"
         else
-          URI=`cat ./data/tor/hidden_service_lnd_rest/hostname` && $docker_command exec awning_lnd lndconnect --host $URI --port 8080
+          URI=`cat ./data/tor/hidden_service_lnd_rest/hostname` && $docker_command exec btcstack_lnd lndconnect --host $URI --port 8080
           echo ""
           echo "Press any key to get a code you can copy paste into the app."
           read -n 1 -s -r
           echo ""
-          URI=`cat ./data/tor/hidden_service_lnd_rest/hostname` && $docker_command exec awning_lnd lndconnect -j  --host $URI --port 8080
+          URI=`cat ./data/tor/hidden_service_lnd_rest/hostname` && $docker_command exec btcstack_lnd lndconnect -j  --host $URI --port 8080
         fi
         echo ""
         echo "Press any key to continue..."
@@ -655,7 +655,7 @@ utils_submenu() {
     echo "3) Restart services"
     echo "4) Rebuild docker images"
     echo "5) Run the SETUP tutorial"
-    echo "6) Update Awning"
+    echo "6) Update Bitcoin Docker Stack"
     echo ""
     echo -e "${BOLD}0) <- Back to main menu${NB}"
     echo "#############################################"
@@ -664,10 +664,10 @@ utils_submenu() {
     read option
     case $option in
       1)
-        $docker_command exec -it awning_bitcoin bash
+        $docker_command exec -it btcstack_bitcoin bash
         ;;
       2)
-        $docker_command exec -it awning_lnd bash
+        $docker_command exec -it btcstack_lnd bash
         ;;
       3)
         restart_submenu
@@ -685,9 +685,9 @@ utils_submenu() {
           git pull origin master
           git stash apply
           echo ""
-          echo "You may need to rebuild and/or restart the Awning services"
+          echo "You may need to rebuild and/or restart services"
           echo "Press any key to continue..."
-          exec ./awning.sh
+          exec ./install.sh
           exit
           read -n 1 -s -r
         elif [[ $answer =~ ^[Nn]$ ]]; then
@@ -711,7 +711,7 @@ restart_submenu() {
     echo "#############################################"
     echo "#                Restart                    #"
     echo "#############################################"
-    echo "1) Restart the Awning node"
+    echo "1) Restart the stack"
     echo "2) Restart Bitcoin"
     echo "3) Restart LND"
     echo ""

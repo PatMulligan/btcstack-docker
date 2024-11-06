@@ -1,5 +1,5 @@
   tor:
-    container_name: awning_tor
+    container_name: btcstack_tor
     user: "${UID}:${GID}"
     build:
       context: ./dockerfiles/

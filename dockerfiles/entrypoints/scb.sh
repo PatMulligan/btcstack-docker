@@ -12,8 +12,8 @@
 # # By default, both methods are used. If you do NOT want to use one of the
 # #   method, replace "true" by "false" in the two variables below:
 cd /data
-git config --global user.email "awning@dummyemail.com" 
-git config --global user.name "Awning"
+git config --global user.email "btcstack@dummyemail.com" 
+git config --global user.name "Btcstack"
 
 REMOTE_BACKUP_ENABLED=true
 LOCAL_BACKUP_ENABLED=false
