@@ -12,6 +12,8 @@ services:
       - ./data/tor:/var/lib/tor/
       - ./configs/torrc:/etc/tor/torrc:ro
     restart: unless-stopped
+    networks:
+      - public-net
 
   bitcoin:
     container_name: btcstack_bitcoin
@@ -30,6 +32,8 @@ services:
       - ./data/tor:/data/cookie:ro
       - ./configs/bitcoin.conf:/data/.bitcoin/bitcoin.conf:ro
     restart: unless-stopped
+    networks:
+      - btc-net
 
   electrs:
     container_name: btcstack_electrs
@@ -47,6 +51,8 @@ services:
       - ./data/electrs:/data
       - ./data/bitcoin:/data/.bitcoin:ro
     restart: unless-stopped
+    networks:
+      - btc-net
 
   lnd:
     container_name: btcstack_lnd
@@ -70,6 +76,8 @@ services:
     environment:
       LND_PASSWORD: ${LND_PASSWORD}
     restart: unless-stopped
+    networks:
+      - btc-net
 
   rtl:
     container_name: btcstack_rtl
@@ -90,4 +98,11 @@ services:
       - ./data/lnd:/data/.lnd:ro
       - ./data/rtl:/data/rtldb
     restart: unless-stopped
+    networks:
+      - public-net
+      - btc-net
 
+networks:
+  public-net:
+    external: true
+  btc-net:
