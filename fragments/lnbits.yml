@@ -1,0 +1,52 @@
+# TODO: build from source like other projects
+  lnbits:
+    container_name: btcstack_lnbits
+    depends_on: [lnd, lnbits-db]
+    image: lnbits/lnbits:v0.12.12@sha256:739512d10c10535bdb53ab363640f02f95e3f857b64af401d48991d3cf2e43a8
+    init: true
+    restart: unless-stopped
+    stop_grace_period: 1m
+    environment:
+      ## Global
+      LNBITS_HOST: "0.0.0.0"
+      LNBITS_PORT: ${LNBITS_PORT}
+      LNBITS_ADMIN_UI: "true"
+      ## App
+      LNBITS_SITE_TITLE: "LNbits"
+      LNBITS_DEFAULT_WALLET_NAME: "LNbits wallet"
+      LNBITS_DATA_FOLDER: "/app/data" # TODO: Is this necessary when using postgres?
+      ## LND
+      LNBITS_BACKEND_WALLET_CLASS: LndRestWallet
+      LND_REST_ENDPOINT: https://lnd:8080/ # TODO: update after making LND_PORT env var
+      LND_REST_CERT: "/data/.lnd/tls.cert"
+      LND_REST_MACAROON: "/data/.lnd/data/chain/bitcoin/mainnet/admin.macaroon" # TODO: make an env variable instead of "mainnet"
+      ## Postgres
+      LNBITS_DATABASE_URL: "postgres://${LNBITS_POSTGRES_USER}:${LNBITS_POSTGRES_PASSWORD}@lnbits-db:5432/${LNBITS_POSTGRES_DB}"
+    volumes:
+      - ./data/lnbits/data:/app/data
+      - ./configs/lnbits.env:/app/.env
+      - ./data/lnd:/data/.lnd:ro
+    ports:
+      - "${LNBITS_PORT}:${LNBITS_PORT}"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.lnbits.rule: Host(`${LNBITS_SUBDOMAIN}${HOST}`)
+      traefik.http.services.lnbits.loadbalancer.server.port: ${LNBITS_PORT}
+    networks:
+      - public-net
+      - btc-net
+      - lnbits-net
+
+  lnbits-db:
+    container_name: btcstack_lnbits-db
+    image: postgres:16.2-alpine3.19
+    environment:
+      POSTGRES_USER: "${LNBITS_POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${LNBITS_POSTGRES_PASSWORD}"
+      POSTGRES_DB: "${LNBITS_POSTGRES_DB}"
+    volumes:
+      - ./data/lnbits/postgres-data:/var/lib/postgresql/data
+    networks:
+      - lnbits-net
+
+

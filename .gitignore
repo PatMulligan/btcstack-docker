@@ -32,3 +32,6 @@ data/nbx/*
 
 data/btcpay/*
 !data/btcpay/.gitkeep
+
+data/lnbits/*
+!data/lnbits/.gitkeep

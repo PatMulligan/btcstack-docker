@@ -333,6 +333,8 @@ $ docker-compose up -d --build
 For any questions or issues you can join our [Telegram support channel]() or open a [Github issue]().
 
 # Donations/Project contributions
+> [!TODO]
+> Add Donation link with split to giovantenne
 If you would like to contribute and help dev team with this project you can send a donation to the following LN address ⚡``⚡ or on-chain   ``
 
 Enjoy!
