@@ -81,12 +81,13 @@ services:
       args:
         UID: ${UID}
         GID: ${GID}
+        RTL_VERSION: ${RTL_VERSION}
+    environment:
+      APP_PASSWORD: ${RTL_PASSWORD}
     volumes:
       - ./configs/rtl.json:/data/RTL/RTL-Config.json
       - ./configs/lnd.conf:/data/lnd.conf:ro
       - ./data/lnd:/data/.lnd:ro
       - ./data/rtl:/data/rtldb
-    environment:
-      APP_PASSWORD: ${RTL_PASSWORD}
     restart: unless-stopped
 
