@@ -12,19 +12,27 @@
       "index": 1,
       "lnNode": "Node 1",
       "lnImplementation": "LND",
-      "Authentication": {
+      "authentication": {
         "macaroonPath": "/data/.lnd/data/chain/bitcoin/mainnet",
         "configPath": "/data/lnd.conf"
       },
-      "Settings": {
-        "userPersona": "OPERATOR",
-        "themeMode": "DAY",
-        "themeColor": "PURPLE",
-        "logLevel": "INFO",
+      "settings": {
+        "blockExplorerUrl": "https://mempool.space",
         "lnServerUrl": "https://lnd:8080",
-        "fiatConversion": true,
+        "userPersona": "OPERATOR",
+        "themeMode": "NIGHT",
+        "themeColor": "INDIGO",
         "unannouncedChannels": false,
-        "currencyUnit": "EUR"
+        "logLevel": "INFO",
+        "fiatConversion": true,
+        "currencyUnit": "USD",
+        "swapServerUrl": "",
+        "boltzServerUrl": "",
+        "enableOffers": false,
+        "enablePeerswap": false,
+        "bitcoindConfigPath": "",
+        "channelBackupPath": "/data/RTL/channels-backup/node-1",
+        "logFile": "/data/RTL/logs/RTL-Node-1.log"
       }
     }
   ],
