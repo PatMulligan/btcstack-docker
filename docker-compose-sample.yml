@@ -92,6 +92,10 @@ services:
         RTL_VERSION: ${RTL_VERSION}
     environment:
       APP_PASSWORD: ${RTL_PASSWORD}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.rtl.rule=Host(`${RTL_SUBDOMAIN}.${HOST}`)"
+      - "traefik.http.services.rtl.loadbalancer.server.port=8081"
     volumes:
       - ./configs/rtl.json:/data/RTL/RTL-Config.json
       - ./configs/lnd.conf:/data/lnd.conf:ro
