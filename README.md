@@ -305,7 +305,7 @@ $ docker-compose up -d --build
 ```
 # Support
 
-For any questions or issues you can join our [Telegram support channel]() or open a [Github issue]().
+For any questions or issues you can open a [Github issue](https://github.com/PatMulligan/btcstack-docker/issues).
 
 # Donations/Project contributions
 > [!TODO]
