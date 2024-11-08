@@ -1,9 +1,11 @@
 Remix made thanks to [Awning](https://github.com/giovantenne/awning)
 
- # ⚠️ This README is not yet complete and the repo still needs a few touchups.
- The repo is set up to work with Traefik for generating clearnet certs, however its configuration is not here as it is not assumed you have a public IP
+# ⚠️ This README is not yet complete and the repo still needs a few touchups.
+The repo is set up to work with Traefik for generating clearnet certs, however its configuration is not here as it is not assumed you have a public IP
 
- for LND wallet creation, for the time being, you'll want to comment out lines 16&17 (shown below), then docker exec -it btcstack_lnd and create wallet/password. Make sure you
+for LND wallet creation, for the time being, you'll want to comment out lines 16&17 (shown below), then docker exec -it btcstack_lnd and create wallet/password. Make sure you
+
+LNbits is currently set to use sqlite
 
 ```
 # comment lines 16,17 of lnd.conf, set up password which you'll put into config/lnd/password.txt, then uncomment these lines
