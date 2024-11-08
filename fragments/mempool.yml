@@ -16,7 +16,7 @@
     command: "./wait-for mempool-db:3306 --timeout=720 -- nginx -g 'daemon off;'"
     labels:
       traefik.enable: "true"
-      traefik.http.routers.mempool-web.rule: Host(`${MEMPOOL_SUBDOMAIN}${HOST}`)
+      traefik.http.routers.mempool-web.rule: Host(`${MEMPOOL_SUBDOMAIN}.${HOST}`)
       traefik.http.services.mempool-web.loadbalancer.server.port: 8080
     networks:
       - public-net

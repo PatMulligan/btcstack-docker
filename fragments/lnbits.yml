@@ -30,7 +30,7 @@
       - "${LNBITS_PORT}:${LNBITS_PORT}"
     labels:
       traefik.enable: "true"
-      traefik.http.routers.lnbits.rule: Host(`${LNBITS_SUBDOMAIN}${HOST}`)
+      traefik.http.routers.lnbits.rule: Host(`${LNBITS_SUBDOMAIN}.${HOST}`)
       traefik.http.services.lnbits.loadbalancer.server.port: ${LNBITS_PORT}
     networks:
       - public-net
