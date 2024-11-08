@@ -107,7 +107,7 @@ services:
       - btc-net
 
   lnbits:
-     container_name: rainbow_lnbits
+     container_name: btcstack_lnbits
      # depends_on: [lnd, lnbits-db]
      depends_on: [lnd]
      image: lnbits/lnbits:v0.12.12@sha256:739512d10c10535bdb53ab363640f02f95e3f857b64af401d48991d3cf2e43a8
