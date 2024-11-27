@@ -17,7 +17,7 @@
         "configPath": "/data/lnd.conf"
       },
       "settings": {
-        "blockExplorerUrl": "https://mempool.space",
+        "blockExplorerUrl": "https://mempool.btc.mlgn.app",
         "lnServerUrl": "https://lnd:8080",
         "userPersona": "OPERATOR",
         "themeMode": "NIGHT",
